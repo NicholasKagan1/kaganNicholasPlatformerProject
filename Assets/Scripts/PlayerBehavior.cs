@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerBehavior : MonoBehaviour
 {
-    public Vector2 jumpForce = new Vector2(0, 300);
+    public Vector2 JumpForce = new Vector2(0, 300);
 
     public float moveSpeed = 8f;
     public Rigidbody2D Player;
@@ -12,32 +12,52 @@ public class PlayerBehavior : MonoBehaviour
 
     public bool OnGround;
 
-    private bool beenhit = false;
+    public bool beenHit = false;
 
     private float xMove;
     private float yMove;
 
-    private Rigidbody2D rb2d;
+    [SerializeField]
+    private bool shouldJump;
+
+    private Rigidbody2D Rb2d;
     // Start is called before the first frame update
     void Start()
     {
-        Player = GetComponent<Rigidbody2D>();
+        Rb2d = GetComponent<Rigidbody2D>();
     }
 
 
-    private void Update()
+    void Update()
     {
-        bool shouldJump = (Input.GetKeyDown(KeyCode.Space));
+        shouldJump = (Input.GetKeyUp(KeyCode.Space));
 
-        if (shouldJump && !beenhit && OnGround)
+        if (shouldJump && !beenHit && OnGround)
         {
-            rb2d.velocity = Vector2.zero;
-            rb2d.AddForce(jumpForce);
+            Rb2d.velocity = Vector2.zero;
+            Rb2d.AddForce(JumpForce);
         }
         Vector2 newposition = transform.position;
         newposition += new Vector2(Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime, 0);
         transform.position = newposition;
     }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.transform.tag == "Platform")
+        {
+            OnGround = true;
+        }
+    }
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.transform.tag == "Platform")
+        {
+            OnGround = false;
+            Debug.Log(true);
+        }
+    }
+
+
     // Update is called once per frame
 
 
