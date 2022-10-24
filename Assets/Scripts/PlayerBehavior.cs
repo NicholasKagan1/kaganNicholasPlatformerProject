@@ -10,9 +10,11 @@ public class PlayerBehavior : MonoBehaviour
     public Rigidbody2D Player;
     Vector2 movement;
 
+    public GameObject Knife;
     public bool OnGround;
 
     public bool beenHit = false;
+    public bool iframes = false;
 
     private float xMove;
     private float yMove;
@@ -30,7 +32,7 @@ public class PlayerBehavior : MonoBehaviour
 
     void Update()
     {
-        shouldJump = (Input.GetKeyUp(KeyCode.Space));
+        shouldJump = (Input.GetKeyDown(KeyCode.W));
 
         if (shouldJump && !beenHit && OnGround)
         {
@@ -40,6 +42,11 @@ public class PlayerBehavior : MonoBehaviour
         Vector2 newposition = transform.position;
         newposition += new Vector2(Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime, 0);
         transform.position = newposition;
+
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            Instantiate(Knife, transform.position, Quaternion.identity);
+        }
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -47,6 +54,29 @@ public class PlayerBehavior : MonoBehaviour
         {
             OnGround = true;
         }
+
+        if (collision.transform.tag == "KillBox")
+        {
+            transform.position = new Vector2(transform.position.x, transform.position.y + 5);
+            GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+        }
+
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.transform.tag == "Enemy" && !iframes)
+        {
+            iframes = true;
+            Invoke("iTime", 2);
+        }
+      
+    
+    }
+
+    void iTime()
+    {
+        iframes = false;
     }
     private void OnCollisionExit2D(Collision2D collision)
     {
@@ -55,6 +85,8 @@ public class PlayerBehavior : MonoBehaviour
             OnGround = false;
             Debug.Log(true);
         }
+
+
     }
 
 
