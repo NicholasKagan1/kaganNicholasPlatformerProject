@@ -5,7 +5,7 @@ using UnityEngine;
 public class Respawn : MonoBehaviour
 {
     public GameController gController;
-    public bool Lives;
+
     public void Start()
     {
         gController = GameObject.FindObjectOfType<GameController>();
@@ -20,14 +20,7 @@ public class Respawn : MonoBehaviour
 
 
 
-        if (collision.gameObject.tag == "Player")
-        {
-          
-            gController.UpdateScorePlayer2();
-
-
-
-        }
+      
     }
 
 

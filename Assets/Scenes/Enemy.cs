@@ -6,6 +6,7 @@ public class Enemy : MonoBehaviour
 {
     public float Speed;
     public int Duration = 3;
+    public bool isflip = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,5 +24,7 @@ public class Enemy : MonoBehaviour
     {
         Speed *= -1;
         GetComponent<SpriteRenderer>().flipX = !GetComponent<SpriteRenderer>().flipX;
+        isflip = !isflip;
+
     }
 }

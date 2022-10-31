@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerBehavior : MonoBehaviour
 {
@@ -9,6 +10,9 @@ public class PlayerBehavior : MonoBehaviour
     public float moveSpeed = 8f;
     public Rigidbody2D Player;
     Vector2 movement;
+    public float Lives;
+    public TMP_Text LivesUI;
+
 
     public GameObject Knife;
     public bool OnGround;
@@ -45,7 +49,8 @@ public class PlayerBehavior : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            Instantiate(Knife, transform.position, Quaternion.identity);
+            var Item = Instantiate(Knife, transform.position, Quaternion.identity);
+            Item.GetComponent<Rigidbody2D>().AddForce(transform.right * 3, ForceMode2D.Impulse);
         }
     }
     private void OnCollisionEnter2D(Collision2D collision)
@@ -59,6 +64,8 @@ public class PlayerBehavior : MonoBehaviour
         {
             transform.position = new Vector2(transform.position.x, transform.position.y + 5);
             GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+            Lives--;
+            LivesUI.text = "Lives: " + Lives.ToString();
         }
 
     }
@@ -68,7 +75,7 @@ public class PlayerBehavior : MonoBehaviour
         if (collision.gameObject.transform.tag == "Enemy" && !iframes)
         {
             iframes = true;
-            Invoke("iTime", 2);
+            Invoke("iTime", 5);
         }
       
     
