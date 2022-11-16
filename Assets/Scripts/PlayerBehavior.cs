@@ -62,7 +62,7 @@ public class PlayerBehavior : MonoBehaviour
 
         if (collision.transform.tag == "KillBox")
         {
-            transform.position = new Vector2(transform.position.x, transform.position.y + 5);
+            //transform.position = new Vector2(transform.position.x, transform.position.y + 5);
             GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
             Lives--;
             LivesUI.text = "Lives: " + Lives.ToString();
