@@ -7,11 +7,33 @@ public class Enemy : MonoBehaviour
     public float Speed;
     public int Duration = 3;
     public bool isflip = true;
+    public int MaxHealth = 90;
+    int CurrentHealth;
     // Start is called before the first frame update
     void Start()
     {
         Speed = 3;
         InvokeRepeating("Reverse", Duration, Duration);
+        CurrentHealth = MaxHealth;
+    }
+
+    public void damage(int damage)
+    {
+        CurrentHealth -= damage;
+        if (CurrentHealth <= 0)
+        {
+            Death();
+        }
+            
+    }
+
+    void Death()
+    {
+        Debug.Log("Enemy Killed");
+        //GetComponent<KillboxBehavior>().enabled = false;
+        //GetComponent<Respawn>().enabled = false;
+        Destroy(this.gameObject);
+        this.enabled = false;
     }
 
     // Update is called once per frame

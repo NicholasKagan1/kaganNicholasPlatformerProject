@@ -12,7 +12,9 @@ public class PlayerBehavior : MonoBehaviour
     Vector2 movement;
     public float Lives;
     public TMP_Text LivesUI;
-
+    public Transform firePoint;
+    public float KnifeThrow = 20f;
+    public SpriteRenderer Reverse;
 
     public GameObject Knife;
     public bool OnGround;
@@ -31,6 +33,7 @@ public class PlayerBehavior : MonoBehaviour
     void Start()
     {
         Rb2d = GetComponent<Rigidbody2D>();
+        Reverse = GetComponent<SpriteRenderer>();
     }
 
 
@@ -49,8 +52,30 @@ public class PlayerBehavior : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            var Item = Instantiate(Knife, transform.position, Quaternion.identity);
-            Item.GetComponent<Rigidbody2D>().AddForce(transform.right * 3, ForceMode2D.Impulse);
+            //var Item = Instantiate(Knife, transform.position, Quaternion.identity);
+            //Item.GetComponent<Rigidbody2D>().AddForce(transform.right * 3, ForceMode2D.Impulse);
+
+            GameObject Shadow = Instantiate(Knife, firePoint.position, firePoint.rotation);
+            Rigidbody2D rb = Shadow.GetComponent<Rigidbody2D>();
+            if (Reverse.flipX)
+            {
+                rb.AddForce(firePoint.up * -KnifeThrow, ForceMode2D.Impulse);
+            }
+            else
+            {
+                rb.AddForce(firePoint.up * KnifeThrow, ForceMode2D.Impulse);
+            }
+
+        }
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            Reverse.flipX = true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            Reverse.flipX = false;
         }
     }
     private void OnCollisionEnter2D(Collision2D collision)
@@ -69,6 +94,7 @@ public class PlayerBehavior : MonoBehaviour
         }
 
     }
+
 
     private void OnCollisionStay2D(Collision2D collision)
     {
