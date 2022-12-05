@@ -8,6 +8,7 @@ public class Enemy : MonoBehaviour
     public int Duration = 3;
     public bool isflip = true;
     public int MaxHealth = 90;
+    public GameObject WinImage;
     int CurrentHealth;
     // Start is called before the first frame update
     void Start()
@@ -30,6 +31,10 @@ public class Enemy : MonoBehaviour
     void Death()
     {
         Debug.Log("Enemy Killed");
+        if(this.name == "King")
+        {
+            WinImage.SetActive(true);
+        }
         //GetComponent<KillboxBehavior>().enabled = false;
         //GetComponent<Respawn>().enabled = false;
         Destroy(this.gameObject);

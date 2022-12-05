@@ -15,7 +15,7 @@ public class PlayerBehavior : MonoBehaviour
     public Transform firePoint;
     public float KnifeThrow = 20f;
     public SpriteRenderer Reverse;
-
+    public GameObject LoseImage;
     public GameObject Knife;
     public bool OnGround;
 
@@ -78,6 +78,11 @@ public class PlayerBehavior : MonoBehaviour
             Reverse.flipX = false;
         }
     }
+
+    public void LoseGame()
+    {
+        LoseImage.SetActive(true);
+    }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.transform.tag == "Platform")
@@ -91,6 +96,12 @@ public class PlayerBehavior : MonoBehaviour
             GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
             Lives--;
             LivesUI.text = "Lives: " + Lives.ToString();
+            if (Lives < 1)
+            {
+                LoseGame();
+
+            }
+
         }
 
     }

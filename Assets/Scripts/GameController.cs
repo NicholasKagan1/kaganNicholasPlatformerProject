@@ -9,6 +9,7 @@ public class GameController : MonoBehaviour
     public int Lives;
     public TMP_Text TextBox;
     public TMP_Text TextBox2;
+   
     // Start is called before the first frame update
     void Start()
     {
@@ -18,8 +19,25 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+       
+        if (Input.GetKey(KeyCode.Escape))
+
+        {
+
+            Application.Quit();
+
+        }
+
+        else if (Input.GetKey(KeyCode.R))
+
+        {
+
+            UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+
+        }
     }
+
+
 
     public void UpdateScore()
     {
@@ -32,12 +50,10 @@ public class GameController : MonoBehaviour
     {
         Lives += 1;
         TextBox2.text = "" + Lives;
-        if (Lives < 1)
-        {
-            //LoseGame();
-
-        }
+        
     }
+
+  
 
 
 }
