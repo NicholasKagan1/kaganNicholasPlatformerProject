@@ -6,21 +6,22 @@ using TMPro;
 public class PlayerBehavior : MonoBehaviour
 {
     public Vector2 JumpForce = new Vector2(0, 300);
-
-    public float moveSpeed = 8f;
+    public LayerMask BoxcastFilter;
+    private float moveSpeed = 8f;
     public Rigidbody2D Player;
     Vector2 movement;
     public float Lives;
     public TMP_Text LivesUI;
-    public Transform firePoint;
+    public Transform FirePoint;
     public float KnifeThrow = 20f;
     public SpriteRenderer Reverse;
     public GameObject LoseImage;
     public GameObject Knife;
     public bool OnGround;
+    public float BoxcastDistance;
 
-    public bool beenHit = false;
-    public bool iframes = false;
+    public bool BeenHit = false;
+    public bool Iframes = false;
 
     private float xMove;
     private float yMove;
@@ -28,12 +29,19 @@ public class PlayerBehavior : MonoBehaviour
     [SerializeField]
     private bool shouldJump;
 
-    private Rigidbody2D Rb2d;
+    private Rigidbody2D rb2d;
+    private BoxCollider2D myCollider;
+    private Vector2 boxcastSize;
+
+    public float MoveSpeed { get => moveSpeed; set => moveSpeed = value; }
+
     // Start is called before the first frame update
     void Start()
     {
-        Rb2d = GetComponent<Rigidbody2D>();
+        myCollider = GetComponent<BoxCollider2D>();
+        rb2d = GetComponent<Rigidbody2D>();
         Reverse = GetComponent<SpriteRenderer>();
+        boxcastSize = new Vector2(myCollider.size.x - 0.5f, myCollider.size.y);
     }
 
 
@@ -41,29 +49,40 @@ public class PlayerBehavior : MonoBehaviour
     {
         shouldJump = (Input.GetKeyDown(KeyCode.W));
 
-        if (shouldJump && !beenHit && OnGround)
+        if (shouldJump && !BeenHit && OnGround)
         {
-            Rb2d.velocity = Vector2.zero;
-            Rb2d.AddForce(JumpForce);
+            rb2d.velocity = Vector2.zero;
+            rb2d.AddForce(JumpForce);
         }
         Vector2 newposition = transform.position;
-        newposition += new Vector2(Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime, 0);
+        newposition += new Vector2(Input.GetAxis("Horizontal") * MoveSpeed * Time.deltaTime, 0);
         transform.position = newposition;
+
+
+       var hit = Physics2D.BoxCast(transform.position, boxcastSize, 0, Vector2.down, BoxcastDistance, BoxcastFilter );
+        if(hit.transform == null)
+        {
+            OnGround = false;
+        }
+        else
+        {
+            OnGround = true;
+        }
 
         if(Input.GetKeyDown(KeyCode.Space))
         {
             //var Item = Instantiate(Knife, transform.position, Quaternion.identity);
             //Item.GetComponent<Rigidbody2D>().AddForce(transform.right * 3, ForceMode2D.Impulse);
 
-            GameObject Shadow = Instantiate(Knife, firePoint.position, firePoint.rotation);
+            GameObject Shadow = Instantiate(Knife, FirePoint.position, FirePoint.rotation);
             Rigidbody2D rb = Shadow.GetComponent<Rigidbody2D>();
             if (Reverse.flipX)
             {
-                rb.AddForce(firePoint.up * -KnifeThrow, ForceMode2D.Impulse);
+                rb.AddForce(FirePoint.up * -KnifeThrow, ForceMode2D.Impulse);
             }
             else
             {
-                rb.AddForce(firePoint.up * KnifeThrow, ForceMode2D.Impulse);
+                rb.AddForce(FirePoint.up * KnifeThrow, ForceMode2D.Impulse);
             }
 
         }
@@ -82,13 +101,11 @@ public class PlayerBehavior : MonoBehaviour
     public void LoseGame()
     {
         LoseImage.SetActive(true);
+        MoveSpeed = 0;
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.transform.tag == "Platform")
-        {
-            OnGround = true;
-        }
+     
 
         if (collision.transform.tag == "KillBox")
         {
@@ -109,9 +126,9 @@ public class PlayerBehavior : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (collision.gameObject.transform.tag == "Enemy" && !iframes)
+        if (collision.gameObject.transform.tag == "Enemy" && !Iframes)
         {
-            iframes = true;
+            Iframes = true;
             Invoke("iTime", 5);
         }
       
@@ -120,18 +137,9 @@ public class PlayerBehavior : MonoBehaviour
 
     void iTime()
     {
-        iframes = false;
+        Iframes = false;
     }
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.transform.tag == "Platform")
-        {
-            OnGround = false;
-            Debug.Log(true);
-        }
-
-
-    }
+ 
 
 
     // Update is called once per frame

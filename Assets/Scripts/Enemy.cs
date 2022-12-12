@@ -6,7 +6,7 @@ public class Enemy : MonoBehaviour
 {
     public float Speed;
     public int Duration = 3;
-    public bool isflip = true;
+    public bool IsFlip = true;
     public int MaxHealth = 90;
     public GameObject WinImage;
     int CurrentHealth;
@@ -34,6 +34,8 @@ public class Enemy : MonoBehaviour
         if(this.name == "King")
         {
             WinImage.SetActive(true);
+            PlayerBehavior PB = GameObject.FindObjectOfType<PlayerBehavior>();
+            PB.MoveSpeed = 0;
         }
         //GetComponent<KillboxBehavior>().enabled = false;
         //GetComponent<Respawn>().enabled = false;
@@ -51,7 +53,8 @@ public class Enemy : MonoBehaviour
     {
         Speed *= -1;
         GetComponent<SpriteRenderer>().flipX = !GetComponent<SpriteRenderer>().flipX;
-        isflip = !isflip;
+        IsFlip = !IsFlip;
+
 
     }
 }

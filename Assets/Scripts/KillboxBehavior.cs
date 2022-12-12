@@ -5,7 +5,7 @@ using UnityEngine;
 public class KillboxBehavior : MonoBehaviour
 {
     // Start is called before the first frame update
-    public Enemy enemybehavior;
+    public Enemy EnemyBehavior;
     void Start()
     {
         
@@ -14,7 +14,7 @@ public class KillboxBehavior : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (enemybehavior.isflip != true)
+        if (EnemyBehavior.IsFlip != true)
         {
             GetComponent<BoxCollider2D>().offset = new Vector2(0.65f, 0);
 
